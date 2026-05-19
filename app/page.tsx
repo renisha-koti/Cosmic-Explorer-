@@ -1,3 +1,4 @@
+import Link from "next/link";
 import StarCanvas from "./components/StarCanvas";
 
 export default function Home() {
@@ -85,9 +86,9 @@ export default function Home() {
         </p>
 
         <div className="opacity-0-start animate-fade-in-up delay-800 mt-10 sm:mt-12">
-          <button
-            type="button"
-            className="group relative overflow-hidden rounded-full px-10 py-4 text-sm font-medium tracking-wide text-white transition-all duration-300 sm:px-12 sm:py-4 sm:text-base"
+          <Link
+            href="/explore"
+            className="group relative inline-flex overflow-hidden rounded-full px-10 py-4 text-sm font-medium tracking-wide text-white transition-all duration-300 sm:px-12 sm:py-4 sm:text-base"
           >
             <span className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-600 transition-all duration-300 group-hover:from-cyan-400 group-hover:via-blue-400 group-hover:to-violet-500" />
             <span className="absolute inset-0 rounded-full opacity-0 blur-xl bg-cyan-400 transition-opacity duration-300 group-hover:opacity-60" />
@@ -113,7 +114,7 @@ export default function Home() {
             </span>
 
             <span className="absolute -inset-1 -z-10 rounded-full bg-gradient-to-r from-cyan-500/40 via-blue-500/40 to-violet-500/40 opacity-70 blur-md transition-all duration-300 group-hover:opacity-100 group-hover:blur-lg group-hover:scale-105" />
-          </button>
+          </Link>
         </div>
 
         <p className="opacity-0-start animate-fade-in delay-800 mt-16 text-xs tracking-widest text-slate-500 uppercase">
