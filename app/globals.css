@@ -2,6 +2,7 @@
 
 /* Tell Tailwind v4 which files contain class names */
 @source "./**/*.{js,ts,jsx,tsx}";
+@source "./explore/**/*.{js,ts,jsx,tsx}";
 @source "../components/**/*.{js,ts,jsx,tsx}";
 
 html,
