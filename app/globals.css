@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 which files contain class names */
+@source "./**/*.{js,ts,jsx,tsx}";
+@source "../components/**/*.{js,ts,jsx,tsx}";
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #030014;
+  color: #e2e8f0;
+}
+
+/* ─── Landing page animations ─── */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nebula-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(3%, -2%) scale(1.08);
+    opacity: 0.65;
+  }
+}
+
+@keyframes nebula-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes planet-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 30px rgba(96, 165, 250, 0.5),
+      0 0 60px rgba(59, 130, 246, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 45px rgba(147, 197, 253, 0.7),
+      0 0 80px rgba(59, 130, 246, 0.35);
+  }
+}
+
+@keyframes title-glow {
+  0%,
+  100% {
+    text-shadow:
+      0 0 40px rgba(147, 197, 253, 0.5),
+      0 0 80px rgba(59, 130, 246, 0.3),
+      0 0 120px rgba(99, 102, 241, 0.15);
+  }
+  50% {
+    text-shadow:
+      0 0 60px rgba(191, 219, 254, 0.7),
+      0 0 100px rgba(59, 130, 246, 0.45),
+      0 0 140px rgba(129, 140, 248, 0.25);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1.2s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 1.6s ease-out forwards;
+}
+
+.animate-nebula-drift {
+  animation: nebula-drift 18s ease-in-out infinite;
+}
+
+.animate-nebula-pulse {
+  animation: nebula-pulse 12s ease-in-out infinite;
+}
+
+.animate-orbit-spin {
+  animation: orbit-spin 24s linear infinite;
+}
+
+.animate-planet-glow {
+  animation: planet-glow 4s ease-in-out infinite;
+}
+
+.animate-title-glow {
+  animation: title-glow 5s ease-in-out infinite;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-600 {
+  animation-delay: 0.6s;
+}
+
+.delay-800 {
+  animation-delay: 0.8s;
+}
+
+.opacity-0-start {
+  opacity: 0;
+}
+
+.orbit-reverse {
+  animation-direction: reverse;
+  animation-duration: 36s;
+}
+
+.nebula-delay {
+  animation-delay: -6s;
+}
