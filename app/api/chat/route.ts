@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import {
   askAstronomyGuide,
-  formatGeminiError,
+  formatGroqError,
   type ChatHistoryItem,
-} from "@/lib/gemini";
+} from "@/lib/groq";
 
 export const runtime = "nodejs";
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ reply });
   } catch (err) {
     console.error("[api/chat]", err);
-    const { status, error, detail } = formatGeminiError(err);
+    const { status, error, detail } = formatGroqError(err);
     return NextResponse.json({ error, detail }, { status });
   }
 }

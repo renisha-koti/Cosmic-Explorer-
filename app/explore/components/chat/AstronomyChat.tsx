@@ -130,8 +130,8 @@ export default function AstronomyChat() {
                 Astronomy chat
               </h2>
               <p className="mt-1 max-w-2xl text-sm text-slate-400">
-                Ask anything about space, planets, stars, or exploration. Answers
-                come from Google Gemini—your API key stays on the server.
+                Ask anything about space, planets, stars, or exploration. Your
+                API key stays on the server.
               </p>
             </div>
             <div

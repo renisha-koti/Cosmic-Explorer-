@@ -19,7 +19,7 @@ export default function ExploreAbout() {
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
             Cosmic Explorer is an interactive learning experience inspired by
             NASA mission control — explore a 3D solar system, ask an AI astronomy
-            guide powered by Google Gemini, and test your knowledge with a
+            guide powered by Groq AI, and test your knowledge with a
             space-themed quiz.
           </p>
 
