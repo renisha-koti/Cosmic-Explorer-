@@ -22,7 +22,10 @@ export default function SolarSystemViewer() {
           dpr={[1, 2]}
         >
           <Suspense fallback={null}>
-            <SolarSystemScene onPlanetSelect={setSelectedPlanet} />
+            <SolarSystemScene
+              onPlanetSelect={setSelectedPlanet}
+              selectedPlanetId={selectedPlanet?.id ?? null}
+            />
           </Suspense>
         </Canvas>
 

@@ -7,11 +7,13 @@ import Sun from "./Sun";
 
 type SolarSystemSceneProps = {
   onPlanetSelect: (planet: PlanetData) => void;
+  selectedPlanetId?: string | null;
 };
 
 /** All 3D objects inside the Canvas. */
 export default function SolarSystemScene({
   onPlanetSelect,
+  selectedPlanetId,
 }: SolarSystemSceneProps) {
   return (
     <>
@@ -33,7 +35,12 @@ export default function SolarSystemScene({
       <Sun />
 
       {PLANETS.map((planet) => (
-        <Planet key={planet.id} data={planet} onSelect={onPlanetSelect} />
+        <Planet
+          key={planet.id}
+          data={planet}
+          onSelect={onPlanetSelect}
+          isSelected={selectedPlanetId === planet.id}
+        />
       ))}
 
       <OrbitControls

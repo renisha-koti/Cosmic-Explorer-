@@ -10,24 +10,36 @@ import OrbitRing from "./OrbitRing";
 type PlanetProps = {
   data: PlanetData;
   onSelect: (planet: PlanetData) => void;
+  isSelected?: boolean;
 };
 
 /** A single planet orbiting the Sun with hover glow and click selection. */
-export default function Planet({ data, onSelect }: PlanetProps) {
+export default function Planet({ data, onSelect, isSelected = false }: PlanetProps) {
   const orbitRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const scaleRef = useRef(1);
+  const spinRef = useRef(0);
 
   useFrame((_, delta) => {
     if (orbitRef.current) {
-      orbitRef.current.rotation.y += data.orbitSpeed * delta;
+      // Scene-friendly orbit speeds: keep motion readable and click targets stable.
+      const orbitSpeed = data.orbitSpeed * 0.22;
+      orbitRef.current.rotation.y += orbitSpeed * delta;
     }
 
-    const targetScale = hovered ? 1.18 : 1;
+    const targetScale = hovered ? 1.18 : isSelected ? 1.08 : 1;
     scaleRef.current += (targetScale - scaleRef.current) * Math.min(delta * 8, 1);
     if (meshRef.current) {
       meshRef.current.scale.setScalar(scaleRef.current);
+    }
+
+    // Gentle axial spin for visual life (doesn't affect raycasting).
+    // Uses a stable speed derived from orbitSpeed so planets differ slightly.
+    const targetSpin = 0.35 + data.orbitSpeed * 0.04;
+    spinRef.current += targetSpin * delta;
+    if (meshRef.current) {
+      meshRef.current.rotation.y = spinRef.current;
     }
   });
 
@@ -37,7 +49,7 @@ export default function Planet({ data, onSelect }: PlanetProps) {
 
       <group position={[data.orbitRadius, 0, 0]}>
         {data.hasRings && (
-          <mesh rotation={[Math.PI / 2.2, 0.15, 0]}>
+          <mesh rotation={[Math.PI / 2.2, 0.15, 0]} raycast={() => null}>
             <ringGeometry args={[data.size * 1.35, data.size * 2.1, 64]} />
             <meshBasicMaterial
               color="#d4c4a0"
@@ -68,15 +80,15 @@ export default function Planet({ data, onSelect }: PlanetProps) {
           <meshStandardMaterial
             color={data.color}
             emissive={data.color}
-            emissiveIntensity={hovered ? 0.9 : 0.22}
+            emissiveIntensity={hovered ? 0.95 : isSelected ? 0.65 : 0.22}
             roughness={0.65}
             metalness={0.15}
           />
         </mesh>
 
-        {hovered && (
+        {(hovered || isSelected) && (
           <pointLight
-            intensity={1.2}
+            intensity={hovered ? 1.2 : 0.85}
             distance={4}
             color={data.color}
             decay={2}

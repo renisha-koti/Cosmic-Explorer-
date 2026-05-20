@@ -98,6 +98,19 @@ body {
   }
 }
 
+@keyframes hud-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 1.2s ease-out forwards;
 }
@@ -124,6 +137,10 @@ body {
 
 .animate-title-glow {
   animation: title-glow 5s ease-in-out infinite;
+}
+
+.animate-hud-card-in {
+  animation: hud-card-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .delay-200 {
