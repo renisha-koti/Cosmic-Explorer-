@@ -9,11 +9,9 @@ type PlanetInfoCardProps = {
 export default function PlanetInfoCard({ planet, onClose }: PlanetInfoCardProps) {
   return (
     <div
-      className="absolute bottom-4 left-4 right-4 z-20 mx-auto w-[min(520px,calc(100%-2rem))] animate-hud-card-in rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-4 shadow-[0_0_60px_rgba(34,211,238,0.12)] backdrop-blur-xl sm:bottom-auto sm:left-auto sm:right-6 sm:top-6 sm:p-5"
-      onPointerDown={(event) => {
-        // Prevent orbit controls / scene clicks from triggering through the overlay.
-        event.stopPropagation();
-      }}
+      className="pointer-events-auto absolute bottom-4 left-4 right-4 z-20 mx-auto w-[min(520px,calc(100%-2rem))] animate-hud-card-in rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-4 shadow-[0_0_60px_rgba(34,211,238,0.12)] backdrop-blur-xl sm:bottom-auto sm:left-auto sm:right-6 sm:top-6 sm:p-5"
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
       role="dialog"
       aria-label={`${planet.name} information`}
     >

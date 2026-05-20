@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import type { PlanetData } from "../data/planets";
 import PlanetInfoCard from "./PlanetInfoCard";
 import SolarSystemScene from "./SolarSystemScene";
@@ -15,6 +15,18 @@ export default function SolarSystemViewer() {
     planet: PlanetData;
     worldPosition: Vector3;
   } | null>(null);
+  const [resetCameraRequest, setResetCameraRequest] = useState<number | null>(
+    null,
+  );
+  /** Ignores stale focus callbacks if the user closed the card early. */
+  const focusSessionRef = useRef(0);
+
+  const handleCloseCard = () => {
+    focusSessionRef.current += 1;
+    setSelectedPlanet(null);
+    setFocusRequest(null);
+    setResetCameraRequest(Date.now());
+  };
 
   return (
     <section
@@ -30,14 +42,17 @@ export default function SolarSystemViewer() {
           <Suspense fallback={null}>
             <SolarSystemScene
               onPlanetSelect={(planet, worldPosition) => {
-                // Zoom first, then open the info card when focus completes.
+                const sessionId = Date.now();
+                focusSessionRef.current = sessionId;
                 setSelectedPlanet(null);
+                setResetCameraRequest(null);
                 setFocusRequest({
-                  id: Date.now(),
+                  id: sessionId,
                   planet,
                   worldPosition,
                 });
               }}
+              resetCameraRequest={resetCameraRequest}
               selectedPlanetId={selectedPlanet?.id ?? null}
               focusRequest={
                 focusRequest
@@ -49,6 +64,7 @@ export default function SolarSystemViewer() {
                   : null
               }
               onFocusComplete={(requestId) => {
+                if (focusSessionRef.current !== requestId) return;
                 setFocusRequest((current) => {
                   if (!current || current.id !== requestId) return current;
                   setSelectedPlanet(current.planet);
@@ -60,18 +76,10 @@ export default function SolarSystemViewer() {
         </Canvas>
 
         {selectedPlanet && (
-          // Transparent overlay: prevents clicks from falling through to the canvas.
-          <div
-            className="absolute inset-0 z-20"
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={(event) => event.stopPropagation()}
-          >
+          <div className="pointer-events-none absolute inset-0 z-20">
             <PlanetInfoCard
               planet={selectedPlanet}
-              onClose={() => {
-                setSelectedPlanet(null);
-                setFocusRequest(null);
-              }}
+              onClose={handleCloseCard}
             />
           </div>
         )}

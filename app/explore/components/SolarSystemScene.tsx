@@ -19,20 +19,36 @@ type SolarSystemSceneProps = {
         worldPosition: Vector3;
       }
     | null;
+  resetCameraRequest?: number | null;
   onFocusComplete?: (requestId: number) => void;
 };
+
+const DEFAULT_CAMERA = new Vector3(0, 14, 24);
+const DEFAULT_TARGET = new Vector3(0, 0, 0);
 
 /** All 3D objects inside the Canvas. */
 export default function SolarSystemScene({
   onPlanetSelect,
   selectedPlanetId,
   focusRequest,
+  resetCameraRequest,
   onFocusComplete,
 }: SolarSystemSceneProps) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const { camera } = useThree();
 
   const focusState = useRef<{
+    requestId: number;
+    active: boolean;
+    completed: boolean;
+    fromCam: Vector3;
+    toCam: Vector3;
+    fromTarget: Vector3;
+    toTarget: Vector3;
+    t: number;
+  } | null>(null);
+
+  const resetState = useRef<{
     requestId: number;
     active: boolean;
     fromCam: Vector3;
@@ -70,20 +86,51 @@ export default function SolarSystemScene({
     focusState.current = {
       requestId: focusRequest.id,
       active: true,
+      completed: false,
       fromCam: camera.position.clone(),
       toCam: desiredCam.clone(),
       fromTarget: currentTarget.clone(),
       toTarget: target.clone(),
       t: 0,
     };
+    resetState.current = null;
   }, [camera, focusRequest, scratch]);
 
-  useFrame((_, delta) => {
-    const state = focusState.current;
+  useEffect(() => {
+    if (resetCameraRequest == null) return;
     const controls = controlsRef.current;
-    if (!state || !state.active || !controls) return;
+    if (!controls) return;
 
-    // Smooth, time-based interpolation with a quick ease-out.
+    resetState.current = {
+      requestId: resetCameraRequest,
+      active: true,
+      fromCam: camera.position.clone(),
+      toCam: DEFAULT_CAMERA.clone(),
+      fromTarget: controls.target.clone(),
+      toTarget: DEFAULT_TARGET.clone(),
+      t: 0,
+    };
+    focusState.current = null;
+  }, [camera, resetCameraRequest]);
+
+  useFrame((_, delta) => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    const reset = resetState.current;
+    if (reset?.active) {
+      reset.t = Math.min(1, reset.t + delta * 2.2);
+      const easeOut = 1 - Math.pow(1 - reset.t, 3);
+      camera.position.lerpVectors(reset.fromCam, reset.toCam, easeOut);
+      controls.target.lerpVectors(reset.fromTarget, reset.toTarget, easeOut);
+      controls.update();
+      if (reset.t >= 1) reset.active = false;
+      return;
+    }
+
+    const state = focusState.current;
+    if (!state?.active) return;
+
     state.t = Math.min(1, state.t + delta * 2.8);
     const easeOut = 1 - Math.pow(1 - state.t, 3);
 
@@ -93,7 +140,8 @@ export default function SolarSystemScene({
 
     const camDone = camera.position.distanceTo(state.toCam) < 0.05;
     const targetDone = controls.target.distanceTo(state.toTarget) < 0.05;
-    if (state.t >= 1 || (camDone && targetDone)) {
+    if ((state.t >= 1 || (camDone && targetDone)) && !state.completed) {
+      state.completed = true;
       state.active = false;
       onFocusComplete?.(state.requestId);
     }
