@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AstronomyChat from "./chat/AstronomyChat";
 import SolarSystemViewer from "./SolarSystemViewer";
 
 /** Client-side explore layout (3D canvas must not run on the server). */
@@ -41,6 +42,8 @@ export default function ExploreContent() {
         </p>
 
         <SolarSystemViewer />
+
+        <AstronomyChat />
       </div>
     </main>
   );
