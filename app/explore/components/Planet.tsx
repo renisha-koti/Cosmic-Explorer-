@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Vector3 } from "three";
 import type { Group, Mesh } from "three";
 import { DoubleSide } from "three";
 import type { PlanetData } from "../data/planets";
@@ -9,7 +10,7 @@ import OrbitRing from "./OrbitRing";
 
 type PlanetProps = {
   data: PlanetData;
-  onSelect: (planet: PlanetData) => void;
+  onSelect: (planet: PlanetData, worldPosition: Vector3) => void;
   isSelected?: boolean;
 };
 
@@ -64,7 +65,10 @@ export default function Planet({ data, onSelect, isSelected = false }: PlanetPro
           ref={meshRef}
           onClick={(event) => {
             event.stopPropagation();
-            onSelect(data);
+            // Capture the click target position in world space for camera focusing.
+            const worldPosition = new Vector3();
+            meshRef.current?.getWorldPosition(worldPosition);
+            onSelect(data, worldPosition);
           }}
           onPointerOver={(event) => {
             event.stopPropagation();

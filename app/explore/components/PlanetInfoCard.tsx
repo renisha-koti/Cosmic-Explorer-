@@ -10,6 +10,10 @@ export default function PlanetInfoCard({ planet, onClose }: PlanetInfoCardProps)
   return (
     <div
       className="absolute bottom-4 left-4 right-4 z-20 mx-auto w-[min(520px,calc(100%-2rem))] animate-hud-card-in rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-4 shadow-[0_0_60px_rgba(34,211,238,0.12)] backdrop-blur-xl sm:bottom-auto sm:left-auto sm:right-6 sm:top-6 sm:p-5"
+      onPointerDown={(event) => {
+        // Prevent orbit controls / scene clicks from triggering through the overlay.
+        event.stopPropagation();
+      }}
       role="dialog"
       aria-label={`${planet.name} information`}
     >
@@ -27,7 +31,10 @@ export default function PlanetInfoCard({ planet, onClose }: PlanetInfoCardProps)
         </div>
         <button
           type="button"
-          onClick={onClose}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClose();
+          }}
           className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/20 text-sm text-slate-200/80 transition hover:border-white/25 hover:bg-black/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
           aria-label="Close planet info"
         >

@@ -5,10 +5,16 @@ import { Suspense, useState } from "react";
 import type { PlanetData } from "../data/planets";
 import PlanetInfoCard from "./PlanetInfoCard";
 import SolarSystemScene from "./SolarSystemScene";
+import { Vector3 } from "three";
 
 /** Client wrapper: 3D canvas + planet info overlay. */
 export default function SolarSystemViewer() {
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetData | null>(null);
+  const [focusRequest, setFocusRequest] = useState<{
+    id: number;
+    planet: PlanetData;
+    worldPosition: Vector3;
+  } | null>(null);
 
   return (
     <section
@@ -23,17 +29,51 @@ export default function SolarSystemViewer() {
         >
           <Suspense fallback={null}>
             <SolarSystemScene
-              onPlanetSelect={setSelectedPlanet}
+              onPlanetSelect={(planet, worldPosition) => {
+                // Zoom first, then open the info card when focus completes.
+                setSelectedPlanet(null);
+                setFocusRequest({
+                  id: Date.now(),
+                  planet,
+                  worldPosition,
+                });
+              }}
               selectedPlanetId={selectedPlanet?.id ?? null}
+              focusRequest={
+                focusRequest
+                  ? {
+                      id: focusRequest.id,
+                      planetId: focusRequest.planet.id,
+                      worldPosition: focusRequest.worldPosition,
+                    }
+                  : null
+              }
+              onFocusComplete={(requestId) => {
+                setFocusRequest((current) => {
+                  if (!current || current.id !== requestId) return current;
+                  setSelectedPlanet(current.planet);
+                  return null;
+                });
+              }}
             />
           </Suspense>
         </Canvas>
 
         {selectedPlanet && (
-          <PlanetInfoCard
-            planet={selectedPlanet}
-            onClose={() => setSelectedPlanet(null)}
-          />
+          // Transparent overlay: prevents clicks from falling through to the canvas.
+          <div
+            className="absolute inset-0 z-20"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <PlanetInfoCard
+              planet={selectedPlanet}
+              onClose={() => {
+                setSelectedPlanet(null);
+                setFocusRequest(null);
+              }}
+            />
+          </div>
         )}
 
         <p className="pointer-events-none absolute bottom-3 left-0 right-0 text-center text-xs text-slate-500">
