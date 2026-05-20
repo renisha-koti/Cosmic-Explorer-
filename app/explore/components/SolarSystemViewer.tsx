@@ -29,8 +29,8 @@ export default function SolarSystemViewer() {
   };
 
   return (
-    <section
-      className="relative mt-8 w-full max-w-5xl opacity-0-start animate-fade-in-up delay-400"
+    <div
+      className="relative mt-8 w-full max-w-5xl"
       aria-label="Interactive 3D solar system"
     >
       <div className="relative h-[min(70vh,560px)] w-full overflow-hidden rounded-2xl border border-cyan-400/25 bg-black/50 shadow-[0_0_60px_rgba(59,130,246,0.12)]">
@@ -88,6 +88,6 @@ export default function SolarSystemViewer() {
           Drag to orbit · Scroll to zoom · Click a planet for details
         </p>
       </div>
-    </section>
+    </div>
   );
 }

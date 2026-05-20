@@ -46,10 +46,7 @@ export default function AstronomyQuiz() {
   };
 
   return (
-    <section
-      className="mt-12 w-full max-w-5xl opacity-0-start animate-fade-in-up delay-800"
-      aria-label="Astronomy quiz"
-    >
+    <div className="mt-12 w-full max-w-5xl" aria-label="Astronomy quiz">
       <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-4 shadow-[0_0_80px_rgba(99,102,241,0.08)] backdrop-blur-xl sm:p-6">
         <div className="pointer-events-none absolute -inset-px rounded-3xl bg-gradient-to-r from-violet-400/15 via-transparent to-cyan-400/15" />
 
@@ -88,6 +85,6 @@ export default function AstronomyQuiz() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

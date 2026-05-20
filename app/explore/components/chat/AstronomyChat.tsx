@@ -108,8 +108,8 @@ export default function AstronomyChat() {
   };
 
   return (
-    <section
-      className="mt-12 w-full max-w-5xl opacity-0-start animate-fade-in-up delay-600"
+    <div
+      className="mt-12 w-full max-w-5xl"
       aria-labelledby={`${formId}-heading`}
     >
       <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-transparent to-indigo-500/10 blur-3xl" />
@@ -250,6 +250,6 @@ export default function AstronomyChat() {
           </form>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

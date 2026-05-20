@@ -1,11 +1,7 @@
 /** About section — mission overview for the explore experience. */
 export default function ExploreAbout() {
   return (
-    <section
-      id="about"
-      className="scroll-mt-28 mt-12 w-full max-w-5xl opacity-0-start animate-fade-in-up delay-800"
-      aria-labelledby="about-heading"
-    >
+    <div className="mt-12 w-full max-w-5xl" aria-labelledby="about-heading">
       <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-6 shadow-[0_0_80px_rgba(59,130,246,0.08)] backdrop-blur-xl sm:p-8">
         <div className="pointer-events-none absolute -inset-px rounded-3xl bg-gradient-to-r from-indigo-400/15 via-transparent to-cyan-400/15" />
 
@@ -55,6 +51,6 @@ export default function ExploreAbout() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
