@@ -5,6 +5,10 @@
 @source "./explore/**/*.{js,ts,jsx,tsx}";
 @source "../components/**/*.{js,ts,jsx,tsx}";
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   height: 100%;
