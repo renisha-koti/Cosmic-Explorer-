@@ -75,9 +75,11 @@ export default function AstronomyQuiz() {
   };
 
   return (
-    <div className="mt-12 w-full max-w-5xl" aria-label="Astronomy quiz">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-4 shadow-[0_0_80px_rgba(99,102,241,0.08)] backdrop-blur-xl sm:p-6">
-        <div className="pointer-events-none absolute -inset-px rounded-3xl bg-gradient-to-r from-violet-400/15 via-transparent to-cyan-400/15" />
+    <div className="relative mt-14 w-full max-w-6xl" aria-label="Astronomy quiz">
+      <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[2rem] bg-gradient-to-br from-violet-500/12 via-transparent to-cyan-500/12 blur-3xl" />
+      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/50 p-4 shadow-[0_30px_120px_rgba(2,6,23,0.62),0_0_80px_rgba(99,102,241,0.1)] backdrop-blur-2xl sm:p-6">
+        <div className="pointer-events-none absolute -inset-px rounded-[2rem] bg-gradient-to-r from-violet-300/18 via-white/[0.035] to-cyan-300/18" />
+        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/65 to-transparent" />
 
         <div className="relative">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -95,7 +97,7 @@ export default function AstronomyQuiz() {
               aria-pressed={muted}
               aria-label={muted ? "Unmute quiz sounds" : "Mute quiz sounds"}
               title={muted ? "Unmute sounds" : "Mute sounds"}
-              className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/10 bg-black/25 px-3 text-xs font-semibold text-slate-200 transition hover:border-cyan-300/50 hover:bg-cyan-400/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70"
+              className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/10 bg-black/30 px-3 text-xs font-semibold text-slate-200 shadow-inner shadow-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/50 hover:bg-cyan-400/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70"
             >
               <span aria-hidden="true">{muted ? "Off" : "On"}</span>
               <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.75)]" />
@@ -116,7 +118,7 @@ export default function AstronomyQuiz() {
 
           <div className="mt-6">
             {phase === "selecting" ? (
-              <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 px-4 py-5 text-sm text-slate-400">
+              <div className="rounded-2xl border border-dashed border-cyan-200/15 bg-black/25 px-4 py-5 text-sm text-slate-400 shadow-inner shadow-white/5">
                 Pick a mission difficulty to begin the quiz.
               </div>
             ) : phase === "results" ? (

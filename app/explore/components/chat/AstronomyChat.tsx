@@ -5,6 +5,8 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { CHAT_SUGGESTIONS } from "./constants";
 import type { ChatMessage } from "./types";
 
+type SpeechStatus = "speaking" | "paused";
+
 function newId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -31,10 +33,15 @@ function historyForApi(messages: ChatMessage[]): {
 export default function AstronomyChat() {
   const formId = useId();
   const listRef = useRef<HTMLDivElement>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeSpeech, setActiveSpeech] = useState<{
+    messageId: string;
+    status: SpeechStatus;
+  } | null>(null);
 
   const scrollToBottom = useCallback(() => {
     const el = listRef.current;
@@ -45,6 +52,69 @@ export default function AstronomyChat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, loading, scrollToBottom]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const stopSpeech = useCallback(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    utteranceRef.current = null;
+    setActiveSpeech(null);
+  }, []);
+
+  const readAloud = useCallback(
+    (message: ChatMessage) => {
+      if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+        setError("Read Aloud is not supported in this browser.");
+        return;
+      }
+
+      if (activeSpeech?.messageId === message.id) {
+        if (activeSpeech.status === "speaking") {
+          window.speechSynthesis.pause();
+          setActiveSpeech({ messageId: message.id, status: "paused" });
+          return;
+        }
+
+        window.speechSynthesis.resume();
+        setActiveSpeech({ messageId: message.id, status: "speaking" });
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(message.content);
+      utterance.rate = 0.94;
+      utterance.pitch = 1.05;
+      utterance.volume = 0.9;
+
+      utterance.onend = () => {
+        if (utteranceRef.current !== utterance) return;
+        utteranceRef.current = null;
+        setActiveSpeech(null);
+      };
+
+      utterance.onerror = () => {
+        if (utteranceRef.current !== utterance) return;
+        utteranceRef.current = null;
+        setActiveSpeech(null);
+      };
+
+      utteranceRef.current = utterance;
+      setActiveSpeech({ messageId: message.id, status: "speaking" });
+      window.speechSynthesis.speak(utterance);
+    },
+    [activeSpeech],
+  );
 
   const sendMessage = async (rawText: string) => {
     const text = rawText.trim();
@@ -109,13 +179,14 @@ export default function AstronomyChat() {
 
   return (
     <div
-      className="mt-12 w-full max-w-5xl"
+      className="relative mt-14 w-full max-w-6xl"
       aria-labelledby={`${formId}-heading`}
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-transparent to-indigo-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[2rem] bg-gradient-to-br from-cyan-500/12 via-transparent to-indigo-500/12 blur-3xl" />
 
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-4 shadow-[0_0_80px_rgba(34,211,238,0.08)] backdrop-blur-xl sm:p-6">
-        <div className="pointer-events-none absolute -inset-px rounded-3xl bg-gradient-to-r from-cyan-400/15 via-transparent to-violet-400/15" />
+      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/50 p-4 shadow-[0_30px_120px_rgba(2,6,23,0.6),0_0_80px_rgba(34,211,238,0.08)] backdrop-blur-2xl sm:p-6">
+        <div className="pointer-events-none absolute -inset-px rounded-[2rem] bg-gradient-to-r from-cyan-300/18 via-white/[0.035] to-violet-300/18" />
+        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan-100/65 to-transparent" />
 
         <div className="relative">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -129,13 +200,13 @@ export default function AstronomyChat() {
               >
                 Astronomy chat
               </h2>
-              <p className="mt-1 max-w-2xl text-sm text-slate-400">
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-400">
                 Ask anything about space, planets, stars, or exploration. Your
                 API key stays on the server.
               </p>
             </div>
             <div
-              className="mt-3 hidden h-10 w-10 shrink-0 rounded-2xl border border-cyan-400/20 bg-black/30 sm:block"
+              className="mt-3 hidden h-11 w-11 shrink-0 rounded-2xl border border-cyan-200/20 bg-black/30 shadow-[0_0_28px_rgba(34,211,238,0.12)] sm:block"
               aria-hidden
             >
               <div className="m-2 h-6 w-6 animate-pulse rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-80" />
@@ -158,7 +229,7 @@ export default function AstronomyChat() {
                 type="button"
                 disabled={loading}
                 onClick={() => void sendMessage(s)}
-                className="rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-left text-xs text-slate-200 transition hover:border-cyan-400/40 hover:bg-black/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                className="rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-left text-xs text-slate-200 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/45 hover:bg-cyan-300/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
               >
                 {s}
               </button>
@@ -167,7 +238,7 @@ export default function AstronomyChat() {
 
           <div
             ref={listRef}
-            className="mt-4 flex max-h-[min(52vh,420px)] min-h-[200px] flex-col gap-3 overflow-y-auto rounded-2xl border border-white/5 bg-black/25 p-3 sm:p-4"
+            className="mt-4 flex max-h-[min(52vh,420px)] min-h-[220px] flex-col gap-3 overflow-y-auto rounded-[1.5rem] border border-white/10 bg-black/30 p-3 shadow-inner shadow-white/5 sm:p-4"
             role="log"
             aria-live="polite"
             aria-relevant="additions"
@@ -184,7 +255,7 @@ export default function AstronomyChat() {
                   key={m.id}
                   className="flex justify-end"
                 >
-                  <div className="max-w-[min(100%,520px)] rounded-2xl rounded-br-md border border-cyan-400/25 bg-gradient-to-br from-cyan-500/20 to-sky-600/10 px-4 py-3 text-sm text-slate-100 shadow-inner">
+                  <div className="max-w-[min(100%,520px)] rounded-2xl rounded-br-md border border-cyan-300/25 bg-gradient-to-br from-cyan-400/18 to-sky-600/10 px-4 py-3 text-sm text-slate-100 shadow-[0_12px_36px_rgba(8,47,73,0.22)]">
                     {m.content}
                   </div>
                 </div>
@@ -193,11 +264,83 @@ export default function AstronomyChat() {
                   key={m.id}
                   className="flex justify-start"
                 >
-                  <div className="max-w-[min(100%,560px)] rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3 text-sm leading-relaxed text-slate-200">
-                    <span className="mb-1 block text-[10px] font-semibold tracking-widest text-violet-300/90 uppercase">
-                      Cosmic Guide
-                    </span>
-                    {m.content}
+                  <div className="max-w-[min(100%,560px)] rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.055] px-4 py-3 text-sm leading-relaxed text-slate-200 shadow-inner shadow-white/5">
+                    <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                      <span className="block text-[10px] font-semibold tracking-widest text-violet-300/90 uppercase">
+                        Cosmic Guide
+                      </span>
+                      {activeSpeech?.messageId === m.id &&
+                        activeSpeech.status === "speaking" && (
+                          <span
+                            className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.2em] text-cyan-200 uppercase"
+                            aria-label="Reading aloud"
+                          >
+                            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(103,232,249,0.9)]" />
+                            Speaking
+                          </span>
+                        )}
+                    </div>
+                    <p>{m.content}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => readAloud(m)}
+                        className={`inline-flex h-9 items-center gap-2 rounded-full border px-3 text-xs font-semibold transition duration-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60 ${
+                          activeSpeech?.messageId === m.id
+                            ? "border-cyan-300/45 bg-cyan-300/10 text-cyan-100 shadow-[0_0_22px_rgba(34,211,238,0.14)]"
+                            : "border-white/10 bg-black/25 text-slate-300 hover:border-cyan-300/45 hover:bg-cyan-300/10 hover:text-white"
+                        }`}
+                        aria-label={
+                          activeSpeech?.messageId === m.id &&
+                          activeSpeech.status === "speaking"
+                            ? "Pause read aloud"
+                            : activeSpeech?.messageId === m.id
+                              ? "Resume read aloud"
+                              : "Read response aloud"
+                        }
+                      >
+                        <span className="flex h-4 items-end gap-0.5" aria-hidden>
+                          <span
+                            className={`w-0.5 rounded-full bg-cyan-200 ${
+                              activeSpeech?.messageId === m.id &&
+                              activeSpeech.status === "speaking"
+                                ? "h-3 animate-pulse"
+                                : "h-2"
+                            }`}
+                          />
+                          <span
+                            className={`w-0.5 rounded-full bg-blue-200 ${
+                              activeSpeech?.messageId === m.id &&
+                              activeSpeech.status === "speaking"
+                                ? "h-4 animate-bounce"
+                                : "h-3"
+                            }`}
+                          />
+                          <span
+                            className={`w-0.5 rounded-full bg-violet-200 ${
+                              activeSpeech?.messageId === m.id &&
+                              activeSpeech.status === "speaking"
+                                ? "h-2 animate-pulse"
+                                : "h-2"
+                            }`}
+                          />
+                        </span>
+                        {activeSpeech?.messageId === m.id
+                          ? activeSpeech.status === "speaking"
+                            ? "Pause"
+                            : "Resume"
+                          : "Read Aloud"}
+                      </button>
+                      {activeSpeech?.messageId === m.id && (
+                        <button
+                          type="button"
+                          onClick={stopSpeech}
+                          className="inline-flex h-9 items-center justify-center rounded-full border border-white/10 bg-black/25 px-3 text-xs font-semibold text-slate-300 transition duration-300 hover:-translate-y-0.5 hover:border-rose-300/45 hover:bg-rose-400/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/50"
+                        >
+                          Stop
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ),
@@ -205,7 +348,7 @@ export default function AstronomyChat() {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-3 rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3">
+                <div className="flex items-center gap-3 rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.055] px-4 py-3 shadow-inner shadow-white/5">
                   <span className="sr-only">Assistant is typing</span>
                   <div className="flex gap-1.5" aria-hidden>
                     <span className="h-2 w-2 animate-bounce rounded-full bg-cyan-400 [animation-delay:-0.3s]" />
@@ -238,12 +381,12 @@ export default function AstronomyChat() {
                 }
               }}
               placeholder="e.g. What causes the northern lights?"
-              className="min-h-[44px] flex-1 resize-y rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 disabled:opacity-60"
+              className="min-h-[44px] flex-1 resize-y rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-white shadow-inner shadow-white/5 placeholder:text-slate-500 transition focus:border-cyan-300/45 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 disabled:opacity-60"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-6 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 px-6 text-sm font-semibold text-white shadow-[0_0_28px_rgba(34,211,238,0.22)] transition duration-300 hover:-translate-y-0.5 hover:from-cyan-300 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading ? "Sending…" : "Send"}
             </button>

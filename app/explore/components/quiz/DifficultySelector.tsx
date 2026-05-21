@@ -28,10 +28,10 @@ export default function DifficultySelector({
               type="button"
               onClick={() => onSelect(option.id)}
               aria-pressed={isSelected}
-              className={`group relative overflow-hidden rounded-2xl border px-4 py-4 text-left transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/60 hover:bg-cyan-400/10 hover:shadow-[0_0_28px_rgba(34,211,238,0.14)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 ${
+              className={`group relative overflow-hidden rounded-2xl border px-4 py-4 text-left shadow-inner shadow-white/5 transition duration-300 hover:-translate-y-1 hover:border-cyan-300/60 hover:bg-cyan-400/10 hover:shadow-[0_18px_46px_rgba(8,47,73,0.24),0_0_28px_rgba(34,211,238,0.14)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 ${
                 isSelected
                   ? "border-cyan-300/70 bg-cyan-400/15 shadow-[0_0_34px_rgba(34,211,238,0.22)]"
-                  : "border-white/10 bg-black/25"
+                  : "border-white/10 bg-white/[0.045]"
               }`}
             >
               <span

@@ -29,7 +29,7 @@ export default function QuizQuestionView({
 
   return (
     <div key={question.id} className="animate-quiz-in">
-      <div className="rounded-2xl border border-white/10 bg-black/25 p-3 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+      <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-3 shadow-[0_18px_60px_rgba(2,6,23,0.35),0_0_24px_rgba(34,211,238,0.08)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-[11px] font-semibold tracking-[0.28em] text-cyan-300/80 uppercase">
             Question {questionNumber} of {totalQuestions}
@@ -46,7 +46,7 @@ export default function QuizQuestionView({
         </div>
 
         <div
-          className="mt-3 h-2 overflow-hidden rounded-full border border-cyan-300/20 bg-slate-950/80"
+          className="mt-3 h-2 overflow-hidden rounded-full border border-cyan-300/20 bg-slate-950/80 shadow-inner shadow-black"
           aria-label={`Quiz progress ${progressPercent}%`}
           role="progressbar"
           aria-valuemin={0}
@@ -54,7 +54,7 @@ export default function QuizQuestionView({
           aria-valuenow={progressPercent}
         >
           <div
-            className="relative h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-indigo-400 shadow-[0_0_18px_rgba(34,211,238,0.55)] transition-[width] duration-700 ease-out"
+            className="relative h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-indigo-400 shadow-[0_0_22px_rgba(34,211,238,0.62)] transition-[width] duration-700 ease-out"
             style={{ width: `${progressPercent}%` }}
           >
             <span className="absolute inset-0 animate-pulse bg-white/25" />
@@ -72,18 +72,18 @@ export default function QuizQuestionView({
           const isAnswer = index === question.correctIndex;
 
           let optionClass =
-            "rounded-xl border border-white/10 bg-black/25 px-4 py-3 text-left text-sm text-slate-200 transition hover:border-cyan-400/40 hover:bg-black/40 hover:text-white";
+            "rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-left text-sm text-slate-200 shadow-inner shadow-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-300/45 hover:bg-cyan-300/10 hover:text-white";
 
           if (answered) {
             if (isAnswer) {
               optionClass =
-                "rounded-xl border border-emerald-400/50 bg-emerald-950/40 px-4 py-3 text-left text-sm text-emerald-100 shadow-[0_0_20px_rgba(52,211,153,0.15)]";
+                "rounded-2xl border border-emerald-300/50 bg-emerald-950/40 px-4 py-3 text-left text-sm text-emerald-100 shadow-[0_0_24px_rgba(52,211,153,0.16)]";
             } else if (isSelected && !isAnswer) {
               optionClass =
-                "rounded-xl border border-rose-400/50 bg-rose-950/40 px-4 py-3 text-left text-sm text-rose-100 shadow-[0_0_20px_rgba(251,113,133,0.12)]";
+                "rounded-2xl border border-rose-300/50 bg-rose-950/40 px-4 py-3 text-left text-sm text-rose-100 shadow-[0_0_24px_rgba(251,113,133,0.13)]";
             } else {
               optionClass =
-                "rounded-xl border border-white/5 bg-black/15 px-4 py-3 text-left text-sm text-slate-500";
+                "rounded-2xl border border-white/5 bg-black/15 px-4 py-3 text-left text-sm text-slate-500";
             }
           }
 
@@ -112,7 +112,7 @@ export default function QuizQuestionView({
 
       {answered && (
         <div
-          className={`mt-5 rounded-xl border px-4 py-3 text-sm animate-quiz-in ${
+          className={`mt-5 rounded-2xl border px-4 py-3 text-sm shadow-inner shadow-white/5 animate-quiz-in ${
             isCorrect
               ? "border-emerald-400/30 bg-emerald-950/30 text-emerald-100"
               : "border-rose-400/30 bg-rose-950/30 text-rose-100"
@@ -130,7 +130,7 @@ export default function QuizQuestionView({
         <button
           type="button"
           onClick={onNext}
-          className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-indigo-500 sm:w-auto sm:px-8"
+          className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-sm font-semibold text-white shadow-[0_0_28px_rgba(34,211,238,0.22)] transition duration-300 hover:-translate-y-0.5 hover:from-cyan-300 hover:to-indigo-500 sm:w-auto sm:px-8"
         >
           {isLast ? "See results" : "Next question"}
         </button>

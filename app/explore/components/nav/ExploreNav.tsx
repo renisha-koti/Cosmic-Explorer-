@@ -20,26 +20,27 @@ export default function ExploreNav() {
   const linkClass = (id: NavSectionId) => {
     const isActive = activeId === id;
     return [
-      "relative px-3 py-2 text-xs font-medium tracking-[0.12em] uppercase transition-all duration-300",
+      "relative rounded-full px-3.5 py-2 text-xs font-semibold tracking-[0.12em] uppercase transition-all duration-300",
       isActive
-        ? "text-cyan-200"
-        : "text-slate-400 hover:text-white",
+        ? "bg-cyan-300/10 text-cyan-100 shadow-[0_0_22px_rgba(34,211,238,0.12)]"
+        : "text-slate-400 hover:bg-white/5 hover:text-white",
     ].join(" ");
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="border-b border-white/10 bg-[#030014]/40 backdrop-blur-xl backdrop-saturate-150">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-indigo-500/5" />
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/10 bg-[#020617]/55 shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-2xl backdrop-saturate-150">
+        <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan-200/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cyan-500/8 via-white/[0.025] to-indigo-500/8" />
 
         <nav
-          className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:h-[4.25rem] sm:px-6 lg:px-8"
+          className="relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-[4.25rem] sm:px-6 lg:px-8"
           aria-label="Explore page sections"
         >
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Link
               href="/"
-              className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-slate-300 transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10 hover:text-white sm:px-3.5"
+              className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-[11px] text-slate-300 shadow-inner shadow-white/5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-300/45 hover:bg-cyan-300/10 hover:text-white sm:px-3.5"
             >
               <svg
                 className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
@@ -63,7 +64,7 @@ export default function ExploreNav() {
               onClick={() => scrollToSection("solar-system")}
               className="min-w-0 text-left"
             >
-              <p className="truncate text-[10px] font-semibold tracking-[0.35em] text-cyan-400/90 uppercase">
+              <p className="truncate text-[10px] font-semibold tracking-[0.35em] text-cyan-200/90 uppercase">
                 Mission control
               </p>
               <p className="truncate text-sm font-semibold tracking-wide text-white sm:text-base">
@@ -83,7 +84,7 @@ export default function ExploreNav() {
                   {label}
                   {activeId === id && (
                     <span
-                      className="absolute inset-x-2 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_rgba(34,211,238,0.8)]"
+                      className="absolute inset-x-3 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_12px_rgba(34,211,238,0.85)]"
                       aria-hidden
                     />
                   )}
@@ -94,7 +95,7 @@ export default function ExploreNav() {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-200 transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10 hover:text-white md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/25 text-slate-200 transition-all duration-300 hover:border-cyan-300/45 hover:bg-cyan-300/10 hover:text-white md:hidden"
             aria-expanded={mobileOpen}
             aria-controls="explore-mobile-menu"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -115,7 +116,7 @@ export default function ExploreNav() {
 
         <div
           id="explore-mobile-menu"
-          className={`overflow-hidden border-t border-white/10 bg-[#030014]/80 backdrop-blur-xl transition-all duration-300 md:hidden ${
+          className={`overflow-hidden border-t border-white/10 bg-[#020617]/80 backdrop-blur-xl transition-all duration-300 md:hidden ${
             mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
@@ -127,8 +128,8 @@ export default function ExploreNav() {
                   onClick={() => scrollToSection(id)}
                   className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-all duration-300 ${
                     activeId === id
-                      ? "border-cyan-400/40 bg-cyan-500/10 text-cyan-100"
-                      : "border-transparent bg-white/5 text-slate-300 hover:border-white/10 hover:bg-white/10 hover:text-white"
+                      ? "border-cyan-300/40 bg-cyan-400/10 text-cyan-100"
+                      : "border-transparent bg-black/20 text-slate-300 hover:border-white/10 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   <span className="font-medium tracking-wide uppercase">
