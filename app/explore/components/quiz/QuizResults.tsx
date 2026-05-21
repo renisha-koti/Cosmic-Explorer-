@@ -2,6 +2,7 @@ type QuizResultsProps = {
   score: number;
   total: number;
   onRestart: () => void;
+  onChangeDifficulty: () => void;
 };
 
 /** Final score screen after the last question. */
@@ -9,6 +10,7 @@ export default function QuizResults({
   score,
   total,
   onRestart,
+  onChangeDifficulty,
 }: QuizResultsProps) {
   const percent = total > 0 ? Math.round((score / total) * 100) : 0;
 
@@ -44,13 +46,22 @@ export default function QuizResults({
             : "Every astronomer starts somewhere. Restart and climb the leaderboard!"}
       </p>
 
-      <button
-        type="button"
-        onClick={onRestart}
-        className="mt-8 inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-8 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-indigo-500 hover:shadow-cyan-400/30"
-      >
-        Restart quiz
-      </button>
+      <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <button
+          type="button"
+          onClick={onRestart}
+          className="inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-8 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-indigo-500 hover:shadow-cyan-400/30"
+        >
+          Retry mission
+        </button>
+        <button
+          type="button"
+          onClick={onChangeDifficulty}
+          className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-black/25 px-8 text-sm font-semibold text-slate-200 transition hover:border-cyan-300/50 hover:bg-cyan-400/10 hover:text-white"
+        >
+          Change difficulty
+        </button>
+      </div>
     </div>
   );
 }

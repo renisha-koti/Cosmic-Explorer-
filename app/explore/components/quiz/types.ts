@@ -9,4 +9,13 @@ export type QuizQuestion = {
   explanation: string;
 };
 
-export type QuizPhase = "playing" | "results";
+export type QuizDifficulty = "easy" | "medium" | "hard";
+
+export type DifficultyOption = {
+  id: QuizDifficulty;
+  label: string;
+  eyebrow: string;
+  description: string;
+};
+
+export type QuizPhase = "selecting" | "playing" | "results";

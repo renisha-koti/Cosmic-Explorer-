@@ -25,17 +25,41 @@ export default function QuizQuestionView({
   isLast,
 }: QuizQuestionProps) {
   const isCorrect = selectedIndex === question.correctIndex;
+  const progressPercent = Math.round((questionNumber / totalQuestions) * 100);
 
   return (
     <div key={question.id} className="animate-quiz-in">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold tracking-[0.28em] text-cyan-300/80 uppercase">
-          Question {questionNumber} of {totalQuestions}
-        </p>
-        <p className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs text-slate-300">
-          Score:{" "}
-          <span className="font-semibold text-cyan-200">{score}</span>
-        </p>
+      <div className="rounded-2xl border border-white/10 bg-black/25 p-3 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-[11px] font-semibold tracking-[0.28em] text-cyan-300/80 uppercase">
+            Question {questionNumber} of {totalQuestions}
+          </p>
+          <div className="flex items-center gap-2 text-xs text-slate-300">
+            <span className="rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-1 font-semibold text-cyan-100">
+              {progressPercent}%
+            </span>
+            <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1">
+              Score:{" "}
+              <span className="font-semibold text-cyan-200">{score}</span>
+            </span>
+          </div>
+        </div>
+
+        <div
+          className="mt-3 h-2 overflow-hidden rounded-full border border-cyan-300/20 bg-slate-950/80"
+          aria-label={`Quiz progress ${progressPercent}%`}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progressPercent}
+        >
+          <div
+            className="relative h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-indigo-400 shadow-[0_0_18px_rgba(34,211,238,0.55)] transition-[width] duration-700 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          >
+            <span className="absolute inset-0 animate-pulse bg-white/25" />
+          </div>
+        </div>
       </div>
 
       <h3 className="mt-4 text-lg font-semibold leading-snug text-white sm:text-xl">
